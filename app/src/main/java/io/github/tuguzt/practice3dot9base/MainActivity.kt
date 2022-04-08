@@ -48,6 +48,14 @@ class MainActivity : AppCompatActivity() {
             override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                kotlin.run {
+                    val text = when (item?.itemId) {
+                        R.id.search -> "Search"
+                        R.id.gallery -> "Gallery"
+                        else -> return@run
+                    }
+                    Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
+                }
                 mode?.finish()
                 return false
             }
@@ -92,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         // menuInflater.inflate(R.menu.menu_main, menu)
         menu?.add(Menu.NONE, 101, Menu.NONE, "Open")
         menu?.add(Menu.NONE, 102, Menu.NONE, "Save")
+        menu?.add(Menu.NONE, 103, Menu.NONE, "Exit")
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
