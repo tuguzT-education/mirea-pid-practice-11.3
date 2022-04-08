@@ -30,6 +30,14 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val text = buildString {
+            for (i in 1..100) {
+                append(i)
+                append(") string \n")
+            }
+        }
+        binding.textviewFirst.text = text
+
         binding.buttonFirst.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }

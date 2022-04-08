@@ -33,6 +33,7 @@ class SecondFragment : Fragment() {
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
         }
+        registerForContextMenu(binding.textviewSecond)
     }
 
     override fun onDestroyView() {

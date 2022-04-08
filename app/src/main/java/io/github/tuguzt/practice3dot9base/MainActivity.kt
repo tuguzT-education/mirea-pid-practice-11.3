@@ -1,6 +1,8 @@
 package io.github.tuguzt.practice3dot9base
 
 import android.os.Bundle
+import android.view.ContextMenu
+import android.view.ContextMenu.ContextMenuInfo
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -9,6 +11,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.view.ActionMode
 import androidx.navigation.fragment.NavHostFragment
 import io.github.tuguzt.practice3dot9base.databinding.ActivityMainBinding
 
@@ -16,6 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var actionMode: ActionMode
+    private lateinit var actionModeCallback: ActionMode.Callback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +39,29 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
+        actionModeCallback = object: ActionMode.Callback {
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                mode?.menuInflater?.inflate(R.menu.menu_context, menu)
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = false
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                mode?.finish()
+                return false
+            }
+
+            override fun onDestroyActionMode(p0: ActionMode?) = Unit
+        }
+
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show()
+            startSupportActionMode(actionModeCallback)?.let {
+                actionMode = it
+            }
         }
     }
 
@@ -48,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        Toast.makeText(this, "MenuItem click!", Toast.LENGTH_SHORT).show()
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
@@ -57,5 +85,20 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(binding.content.navHostFragmentContentMain.id)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        // menuInflater.inflate(R.menu.menu_main, menu)
+        menu?.add(Menu.NONE, 101, Menu.NONE, "Open")
+        menu?.add(Menu.NONE, 102, Menu.NONE, "Save")
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        Toast.makeText(this, "ContextMenuItem click!", Toast.LENGTH_SHORT).show()
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
